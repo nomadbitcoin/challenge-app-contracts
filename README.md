@@ -1,13 +1,28 @@
-# Sample Hardhat Project
+## TESTING
+#### Test and Generate Jest Reports
+```
+npx hardhat test:jest
+```
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+#### Test and Generate Default Reports
+```
+npx hardhat coverage
+```
 
-Try running some of the following tasks:
+## DOCS GENERATOR
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
+#### Internal Docs
+```
+npx solidity-docgen --solc-module solc-0.8 -t ./docs/template/internal -o ./docs/internal
+```
+
+#### External Docs
+```
+npx solidity-docgen --solc-module solc-0.8 -t ./docs/template/external -o ./docs/external
+```
+
+#### Diagrams: [Sol2uml Examples](https://github.com/naddison36/sol2uml/blob/master/examples/README.md)
+
+```
+npx sol2uml ./contracts -o ./docs/diagram/DiagramTemplate1.svg
 ```

@@ -1,5 +1,6 @@
 require("@nomicfoundation/hardhat-toolbox");
 require('dotenv').config();
+require("hardhat-jest-plugin");
 
 const { WALLET_PRIVATE_KEY } = process.env;
 const { POLYGONSCAN_API_KEY } = process.env;

@@ -10,6 +10,7 @@ contract Lock {
 
     event Withdrawal(uint amount, uint when);
 
+    /// @param _unlockTime WHen will be possible to withdraw
     constructor(uint _unlockTime) payable {
         require(
             block.timestamp < _unlockTime,
