@@ -1,6 +1,7 @@
 require("@nomicfoundation/hardhat-toolbox");
 require('dotenv').config();
 require("hardhat-jest-plugin");
+require("hardhat-gas-reporter");
 
 const { WALLET_PRIVATE_KEY } = process.env;
 const { POLYGONSCAN_API_KEY } = process.env;
@@ -25,4 +26,9 @@ module.exports = {
   etherscan: {
     apiKey: POLYGONSCAN_API_KEY,
   },
+  gasReporter: {
+    enabled: true,
+    currency: 'USD',
+    gasPrice: 21
+  }
 };
