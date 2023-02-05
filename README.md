@@ -1,3 +1,16 @@
+## LOCAL DEPLOYMENT
+#### Run metamask node
+```
+npx hardhat node
+```
+#### Deploy contracts into hardhat local network
+```
+npx hardhat run scripts/deploy.js    
+```
+#### Run front-end static server
+```
+npm start
+```
 ## TESTING
 #### Test and Generate Jest Reports
 ```
