@@ -8,7 +8,7 @@ module.exports = {
   reporters: [
     "default",
     ["./node_modules/jest-html-reporter", {
-      "pageTitle": "Functionality: Deposit and Withdraw at Window Aave Vault for Stablecoins."
+      "pageTitle": ""
     }]
   ]
 };
