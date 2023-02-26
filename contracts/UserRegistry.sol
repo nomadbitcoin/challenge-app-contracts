@@ -2,6 +2,8 @@
 pragma solidity ^0.8.0;
 import "hardhat/console.sol";
 
+// TODO: Permissão de leitura dos dados apenas se for o owner ou seja um usuário registrado.
+
 contract UserRegistry {
     struct User {
         string name;
