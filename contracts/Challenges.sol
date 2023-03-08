@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract ChallengeNFT is ERC1155, Ownable {
     uint256 constant CHALLENGE_PERIOD = 21 days;
@@ -21,19 +22,28 @@ contract ChallengeNFT is ERC1155, Ownable {
         uint256 endTime;
         address[] participants;
         uint256[] taskIds;
+        uint256 challengeDeposit;
     }
 
+
+    IERC20 public usdcToken; // USDC token contract reference
+    
     Challenge[] public challenges;
-    mapping(uint256 => Task) public tasks;
     uint256 public taskCount;
+
+    mapping(uint256 => Task) public tasks;
     mapping(address => mapping(uint256 => bool)) public participants; // maps user address to challenge ID to boolean indicating participation
+    mapping(address => mapping(uint256 => bool)) public hasDeposited; // maps user address to challenge ID to boolean indicating whether they have deposited
 
-    constructor() ERC1155("") {}
 
+    constructor(address _usdcTokenAddress) ERC1155("") {
+        usdcToken = IERC20(_usdcTokenAddress); // sets the USDC token contract reference
+    }
     function addChallenge(
         string memory _name,
         string memory _image,
-        uint256 _startTime
+        uint256 _startTime,
+        uint256 _challengeDeposit
     ) external onlyOwner returns (uint256) {
         uint256 challengeId = challenges.length;
 
@@ -45,12 +55,14 @@ contract ChallengeNFT is ERC1155, Ownable {
                 startTime: _startTime,
                 endTime: _startTime + CHALLENGE_PERIOD,
                 participants: new address[](0),
-                taskIds: new uint[](0)
+                taskIds: new uint[](0),
+                challengeDeposit: _challengeDeposit
             })
         );
 
         return challengeId;
     }
+
 
     function addTask(string memory _taskName) external onlyOwner returns (uint256) {
         uint256 taskId = taskCount;
@@ -72,27 +84,54 @@ contract ChallengeNFT is ERC1155, Ownable {
     }
 
 
-    function registerParticipant(uint256 _challengeId) external {
-        require(
-            _challengeId < challenges.length,
-            "Challenge ID does not exist"
-        );
+    function registerParticipant(uint256 _challengeId, uint256 _depositAmount) external {
+        require(_challengeId < challenges.length, "Challenge ID does not exist");
 
         Challenge storage challenge = challenges[_challengeId];
-        require(
-            block.timestamp < challenge.startTime,
-            "Challenge has already started"
-        );
-        require(
-            block.timestamp < challenge.endTime,
-            "Challenge has already ended"
-        );
+        require(_depositAmount >= challenge.challengeDeposit, "Deposit amount is less than required");
+        require(block.timestamp < challenge.startTime, "Challenge has already started");
+        require(block.timestamp < challenge.endTime, "Challenge has already ended");
 
         if (!participants[msg.sender][_challengeId]) {
             participants[msg.sender][_challengeId] = true;
             challenge.participants.push(msg.sender);
             _mint(msg.sender, _challengeId, 1, "");
+
+            if (!hasDeposited[msg.sender][_challengeId]) {
+                hasDeposited[msg.sender][_challengeId] = true;
+                usdcToken.transferFrom(msg.sender, address(this), _depositAmount); // transfers the deposit amount in USDC from the user to the contract
+            }
         }
+    }
+
+    function withdrawRewards(uint256 _challengeId) external {
+        Challenge storage challenge = challenges[_challengeId];
+        require(block.timestamp > challenge.endTime, "Challenge has not ended yet");
+        require(participants[msg.sender][_challengeId], "User did not participate in challenge");
+
+        uint256 depositAmount = challenge.challengeDeposit;
+
+        // Distribuindo o valor do depósito para todos os participantes
+        for (uint256 i = 0; i < challenge.participants.length; i++) {
+            address participant = challenge.participants[i];
+            usdcToken.transfer(participant, depositAmount); // Transferindo os fundos USDC para o participante
+        }
+    }
+
+
+    function getTasksForChallenge(uint256 _challengeId) external view returns (Task[] memory) {
+        require(_challengeId < challenges.length, "Challenge ID does not exist");
+
+        Challenge storage challenge = challenges[_challengeId];
+        uint256 numTasks = challenge.taskIds.length;
+        Task[] memory result = new Task[](numTasks);
+
+        for (uint256 i = 0; i < numTasks; i++) {
+            uint256 taskId = challenge.taskIds[i];
+            result[i] = tasks[taskId];
+        }
+
+        return result;
     }
 
 
