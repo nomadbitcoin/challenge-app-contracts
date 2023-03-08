@@ -1,4 +1,6 @@
 // Sync object
+import 'core-js';
+
 module.exports = {
   verbose: true,
   testMatch: [
