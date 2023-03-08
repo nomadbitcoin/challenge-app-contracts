@@ -14,6 +14,13 @@ contract ChallengeNFT is ERC1155, Ownable {
         bool completed;
     }
 
+    struct TaskProgress {
+        uint256 timestamp;
+        Task task;
+    }
+
+    mapping(address => mapping(uint => mapping(uint256 => TaskProgress))) participantProgress; // maps the user address to challenge ID to a taskStatus history as progress counter.
+
     struct Challenge {
         uint256 id;
         string name;
