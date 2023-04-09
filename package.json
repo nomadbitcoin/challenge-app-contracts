@@ -15,7 +15,7 @@
     "hardhat-gas-reporter": "^1.0.9",
     "hardhat-jest-plugin": "^0.0.6",
     "jest": "^29.4.1",
-    "jest-html-reporter": "^3.7.0",
+    "jest-html-reporter": "^3.7.1",
     "sol2uml": "^2.4.3",
     "solidity-docgen": "^0.5.16"
   },
