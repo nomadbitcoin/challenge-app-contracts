@@ -11,13 +11,13 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.3",
-    "hardhat": "^2.12.6",
-    "hardhat-gas-reporter": "^1.0.9",
+    "hardhat": "^2.21.0",
+    "hardhat-gas-reporter": "^2.0.0",
     "hardhat-jest-plugin": "^0.0.6",
-    "jest": "^29.4.1",
-    "jest-html-reporter": "^3.7.0",
+    "jest": "^29.6.3",
+    "jest-html-reporter": "^3.10.2",
     "sol2uml": "^2.4.3",
-    "solidity-docgen": "^0.5.16"
+    "solidity-docgen": "^0.5.17"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.1",
